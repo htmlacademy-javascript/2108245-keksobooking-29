@@ -1,11 +1,17 @@
-import { createCustomPopup } from './create-balloon.js';
-import { getData } from '../utils/api.js';
+import {createCustomPopup} from './create-balloon.js';
+import {getData} from '../utils/api.js';
+import {initFilters, addFilters} from './filter.js';
+import { renderMessage } from '../utils/messages.js';
+import { initForm } from '../form/init-form.js';
+
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const GET_URL = 'https://29.javascript.pages.academy/keksobooking/data';
 const ZOOM = 13;
 const DECIMALS = 5;
+const ERROR_MESSAGE = 'Ошибка загрузки данных. Обновите страницу';
+const ERROR_STATE = 'error';
 
 const START_COORDINATE = {
   lat: 35.68172,
@@ -83,17 +89,26 @@ const resetMap = () => {
 
 const onSuccess = (points) => {
   createMarkers(points);
-  createMarker('main');
-  markerGroup.addTo(map);
+  initFilters();
+  addFilters(points);
+  initForm();
 };
 
 const onError = () => {
-  console.log('ошибка');
+  renderMessage(ERROR_STATE, ERROR_MESSAGE);
+};
+
+const renderFilteringMarker = (points) => {
+  createMarkers(points);
+  createMarker('main');
+  markerGroup.addTo(map);
 };
 
 const initMap = () => {
   map.on('load', () => {
     getData(GET_URL, onSuccess, onError);
+    createMarker('main');
+    markerGroup.addTo(map);
     setValue(START_COORDINATE);
   })
     .setView(START_COORDINATE, ZOOM);
@@ -103,4 +118,4 @@ const initMap = () => {
     .addTo(map);
 };
 
-export {initMap, clearMap, resetMap};
+export {initMap, clearMap, resetMap, renderFilteringMarker};
