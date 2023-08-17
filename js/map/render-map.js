@@ -1,9 +1,8 @@
-import {createCustomPopup} from './create-balloon.js';
-import {getData} from '../utils/api.js';
-import {initFilters, addFilters} from './filter.js';
+import { createCustomPopup } from './create-balloon.js';
+import { getData } from '../utils/api.js';
+import { initFilters, addFilters } from './filter.js';
 import { renderMessage } from '../utils/messages.js';
 import { initForm } from '../form/init-form.js';
-
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -39,6 +38,7 @@ const ICONS_CONFIG = {
 const inputAddress = document.querySelector('#address');
 const map = L.map('map-canvas');
 const markerGroup = L.layerGroup();
+const mainMarkerGroup = L.layerGroup();
 
 const setIcon = (type) => {
   const icon = ICONS_CONFIG[type];
@@ -64,7 +64,7 @@ const createMarker = (type = 'default', location, item) => {
       icon: setIcon(type),
       draggable: type === 'main',
     },
-  ).addTo(markerGroup);
+  ).addTo(type === 'main' ? mainMarkerGroup : markerGroup);
 
   if (type === 'default') {
     marker.bindPopup(createCustomPopup(item));
@@ -79,12 +79,17 @@ const createMarkers = (points) => {
   newPoints.forEach((point) => createMarker('default', point.location, point));
 };
 
-const clearMap = () => {
+const clearMarkers = () => {
   markerGroup.clearLayers();
+};
+
+const clearMainMarkers = () => {
+  mainMarkerGroup.clearLayers();
 };
 
 const resetMap = () => {
   map.setView(START_COORDINATE, ZOOM);
+  map.closePopup();
 };
 
 const onSuccess = (points) => {
@@ -100,16 +105,21 @@ const onError = () => {
 
 const renderFilteringMarker = (points) => {
   createMarkers(points);
-  createMarker('main');
   markerGroup.addTo(map);
 };
+
+const renderMainMarker = (type) => {
+  createMarker(type);
+  setValue(START_COORDINATE);
+  mainMarkerGroup.addTo(map);
+};
+
 
 const initMap = () => {
   map.on('load', () => {
     getData(GET_URL, onSuccess, onError);
-    createMarker('main');
+    renderMainMarker('main');
     markerGroup.addTo(map);
-    setValue(START_COORDINATE);
   })
     .setView(START_COORDINATE, ZOOM);
 
@@ -118,4 +128,4 @@ const initMap = () => {
     .addTo(map);
 };
 
-export {initMap, clearMap, resetMap, renderFilteringMarker};
+export {initMap, clearMarkers, clearMainMarkers, renderMainMarker, resetMap, renderFilteringMarker};

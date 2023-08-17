@@ -1,27 +1,8 @@
-import { clearMap, renderFilteringMarker } from './render-map.js';
+import { clearMarkers, renderFilteringMarker } from './render-map.js';
 import { debounce } from '../utils/utils.js';
+import { FILTERING_INPUT_NAME, RENDER_DELAY, PRICE_FILTER, MARKERS_COUNT } from '../utils/constants.js';
 
-const TYPE = 'housing-type';
-const PRICE = 'housing-price';
-const ROOMS = 'housing-rooms';
-const QUESTS = 'housing-guests';
-const DEFAULT = 'any';
-const RENDER_DELAY = 500;
-
-const PRICE_FILTER = {
-  low: {
-    min: 0,
-    max: 9999,
-  },
-  middle: {
-    min: 10000,
-    max: 50000,
-  },
-  high: {
-    min: 50001,
-    max: Infinity,
-  }
-};
+const {type, price, rooms, quests, any} = FILTERING_INPUT_NAME;
 
 const filterForm = document.querySelector('.map__filters');
 const mapFilters = document.querySelectorAll('.map__filter');
@@ -36,22 +17,22 @@ const initFilters = () => {
 };
 
 const checkType = (point, formObject) =>
-  formObject[TYPE] === DEFAULT || point.offer.type === formObject[TYPE];
+  formObject[type] === any || point.offer.type === formObject[type];
 
 
 const checkPrice = (point, formObject) =>
-  formObject[PRICE] === DEFAULT ||
-  (point.offer.price >= PRICE_FILTER[formObject[PRICE]].min &&
-    point.offer.price <= PRICE_FILTER[formObject[PRICE]].max);
+  formObject[price] === any ||
+  (point.offer.price >= PRICE_FILTER[formObject[price]].min &&
+    point.offer.price <= PRICE_FILTER[formObject[price]].max);
 
 
 const checkRooms = (point, formObject) =>
-  formObject[ROOMS] === DEFAULT ||
-    point.offer.rooms === parseInt(formObject[ROOMS], 10);
+  formObject[rooms] === any ||
+    point.offer.rooms === parseInt(formObject[rooms], 10);
 
 const checkQuests = (point, formObject) =>
-  formObject[QUESTS] === DEFAULT ||
-    point.offer.guests === parseInt(formObject[QUESTS], 10);
+  formObject[quests] === any ||
+    point.offer.guests === parseInt(formObject[quests], 10);
 
 
 const checkFeatures = (point, formData) => {
@@ -71,12 +52,12 @@ const filteringData = (data) => {
     checkRooms(point, formObject) &&
     checkQuests(point, formObject) &&
     checkFeatures(point, formData)
-  ).slice(0, 10);
+  ).slice(0, MARKERS_COUNT);
   renderFilteringMarker(newData);
 };
 
 const setDelayRender = debounce((data) => {
-  clearMap();
+  clearMarkers();
   filteringData(data);
 }, RENDER_DELAY);
 
