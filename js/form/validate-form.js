@@ -1,31 +1,7 @@
-const TITLE_MAX_LENGTH = 100;
-const TITLE_MIN_LENGTH = 30;
-const INVALID_MAX_TITLE = 'Не более 100 символов';
-const INVALID_MIN_TITLE = 'Не менее 30 символов';
-const REGEXP = /[e,+,-]/g;
-const REGEXP_NUMBERS = /^[0-9]+$|^$/;
-const INVALID_PRICE_TYPE = 'Только цифры';
-const PRICE_MAX_VALUE = 100000;
-const INVALID_PRICE_VALUE = 'Максимальная цена 100 000';
+import { createEvent } from '../utils/utils.js';
+import { HOUSE_TYPE, FormRules, ROOMS_CAPACITY } from '../utils/constants.js';
 
-const MIN_PRICE = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
-};
-
-const ROOMS_CAPACITY = {
-  1: {
-    quests: 1,
-    message: 'Tолько для 1 гостя'},
-  100: {
-    quests: 0,
-    message: 'Tолько "не для гостей"'},
-  default: {
-    message: 'Гостей от 1 до '},
-};
+const {MAX_TITLE, MIN_TITLE, PRICE_TYPE, MAX_PRICE} = FormRules;
 
 const form = document.querySelector('.ad-form');
 const titleInput = document.querySelector('#title');
@@ -42,31 +18,26 @@ const pristine = new Pristine(form, {
   errorClass: 'ad-form__element--invalid',
 });
 
-const isTitleMaxValid = () => titleInput.value.length <= TITLE_MAX_LENGTH;
+const isTitleMaxValid = () => titleInput.value.length <= MAX_TITLE.length;
 
-const isTitleMinValid = () => titleInput.value.length >= TITLE_MIN_LENGTH;
+const isTitleMinValid = () => titleInput.value.length >= MIN_TITLE.length;
 
-const isPriceTypeValid = () => REGEXP_NUMBERS.test(priceInput.value);
+const isPriceTypeValid = () => PRICE_TYPE.regexpInclude.test(priceInput.value);
 
-const isPriceValid = () => priceInput.value <= PRICE_MAX_VALUE;
+const isPriceValid = () => priceInput.value <= MAX_PRICE.value;
 
-const isPriceToType = () => MIN_PRICE[typeSelect.value] <= priceInput.value;
+const isPriceToType = () => HOUSE_TYPE[typeSelect.value].minPrice <= priceInput.value;
 
-const renderErrorForPrice = () => `Цена должна быть не менее ${MIN_PRICE[typeSelect.value]}`;
-
-const createEventChange = (element) => {
-  const event = new Event('input');
-  element.dispatchEvent(event);
-};
+const renderErrorForPrice = () => `Цена должна быть не менее ${HOUSE_TYPE[typeSelect.value].minPrice}`;
 
 const onPriceInputInput = () => {
-  priceInput.value = priceInput.value.replace(REGEXP, '');
+  priceInput.value = priceInput.value.replace(PRICE_TYPE.regexpExclude, '');
 };
 
 const onTypeSelectChange = (evt) => {
   const value = evt.target.value;
-  priceInput.placeholder = MIN_PRICE[value];
-  createEventChange(priceInput);
+  priceInput.placeholder = HOUSE_TYPE[value].minPrice;
+  createEvent(priceInput, 'input');
 };
 
 const onTimeInSelectChange = (evt) => {
@@ -99,16 +70,16 @@ const renderErrorForCapacity = () => {
 };
 
 const addValidator = () => {
-  priceInput.placeholder = MIN_PRICE[typeSelect.value];
+  priceInput.placeholder = HOUSE_TYPE[typeSelect.value].minPrice;
   priceInput.addEventListener('input', onPriceInputInput);
   typeSelect.addEventListener('change', onTypeSelectChange);
   timeInSelect.addEventListener('change', onTimeInSelectChange);
   timeOutSelect.addEventListener('change', onTimeOutSelectChange);
   roomSelect.addEventListener('change', onRoomSelectChange);
-  pristine.addValidator(titleInput, isTitleMaxValid, INVALID_MAX_TITLE, 1, true);
-  pristine.addValidator(titleInput, isTitleMinValid, INVALID_MIN_TITLE, 1, true);
-  pristine.addValidator(priceInput, isPriceTypeValid, INVALID_PRICE_TYPE, 3, true);
-  pristine.addValidator(priceInput, isPriceValid, INVALID_PRICE_VALUE, 1, true);
+  pristine.addValidator(titleInput, isTitleMaxValid, MAX_TITLE.error, 1, true);
+  pristine.addValidator(titleInput, isTitleMinValid, MIN_TITLE.error, 1, true);
+  pristine.addValidator(priceInput, isPriceTypeValid, PRICE_TYPE.error, 3, true);
+  pristine.addValidator(priceInput, isPriceValid, MAX_PRICE.error, 1, true);
   pristine.addValidator(priceInput, isPriceToType, renderErrorForPrice, 1, true);
   pristine.addValidator(capacitySelect, isCapacityValid, renderErrorForCapacity, 1, true);
 };

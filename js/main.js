@@ -1,5 +1,3 @@
-import {initMap} from './map/render-map.js';
-import { initUploadForm } from './form/init-form.js';
+import { initMap } from './map/render-map.js';
 
 initMap();
-initUploadForm();

@@ -9,4 +9,9 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export {isEscapeKey, debounce};
+const createEvent = (element, evt) => {
+  const event = new Event(evt);
+  element.dispatchEvent(event);
+};
+
+export {isEscapeKey, debounce, createEvent};

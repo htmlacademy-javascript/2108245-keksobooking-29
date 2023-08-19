@@ -1,23 +1,21 @@
+import { FormRules } from '../utils/constants.js';
+
 const sliderContainer = document.querySelector('.ad-form__slider');
 const priceInput = document.querySelector('#price');
 
-const PRICE_RULES = {
-  min: 0,
-  max: 100000,
-  toFixed: 0,
-};
+const { MAX_PRICE, MIN_PRICE, PRICE_TO_FIXED } = FormRules;
 
 const createSlider = () => {
   noUiSlider.create(sliderContainer, {
     range: {
-      min: PRICE_RULES.min,
-      max: PRICE_RULES.max,
+      min: MIN_PRICE.value,
+      max: MAX_PRICE.value,
     },
     start: 0,
     connect: 'lower',
     format: {
       to: function (value) {
-        return value.toFixed(PRICE_RULES.toFixed);
+        return value.toFixed(PRICE_TO_FIXED);
       },
       from: function (value) {
         return parseFloat(value);

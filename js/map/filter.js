@@ -1,8 +1,8 @@
 import { clearMarkers, renderFilteringMarker } from './render-map.js';
-import { debounce } from '../utils/utils.js';
-import { FILTERING_INPUT_NAME, RENDER_DELAY, PRICE_FILTER, MARKERS_COUNT } from '../utils/constants.js';
+import { debounce, createEvent } from '../utils/utils.js';
+import { FilteringInputName, RENDER_DELAY, PRICE_FILTER, MARKERS_COUNT } from '../utils/constants.js';
 
-const {type, price, rooms, quests, any} = FILTERING_INPUT_NAME;
+const {TYPE, PRICE, ROOMS, GUESTS, ANY} = FilteringInputName;
 
 const filterForm = document.querySelector('.map__filters');
 const mapFilters = document.querySelectorAll('.map__filter');
@@ -17,22 +17,22 @@ const initFilters = () => {
 };
 
 const checkType = (point, formObject) =>
-  formObject[type] === any || point.offer.type === formObject[type];
+  formObject[TYPE] === ANY || point.offer.type === formObject[TYPE];
 
 
 const checkPrice = (point, formObject) =>
-  formObject[price] === any ||
-  (point.offer.price >= PRICE_FILTER[formObject[price]].min &&
-    point.offer.price <= PRICE_FILTER[formObject[price]].max);
+  formObject[PRICE] === ANY ||
+  (point.offer.price >= PRICE_FILTER[formObject[PRICE]].min &&
+    point.offer.price <= PRICE_FILTER[formObject[PRICE]].max);
 
 
 const checkRooms = (point, formObject) =>
-  formObject[rooms] === any ||
-    point.offer.rooms === parseInt(formObject[rooms], 10);
+  formObject[ROOMS] === ANY ||
+    point.offer.rooms === parseInt(formObject[ROOMS], 10);
 
 const checkQuests = (point, formObject) =>
-  formObject[quests] === any ||
-    point.offer.guests === parseInt(formObject[quests], 10);
+  formObject[GUESTS] === ANY ||
+    point.offer.guests === parseInt(formObject[GUESTS], 10);
 
 
 const checkFeatures = (point, formData) => {
@@ -41,6 +41,7 @@ const checkFeatures = (point, formData) => {
   if (objectFeatures) {
     return formFeatures.every((formFeature) => objectFeatures.includes(formFeature));
   }
+  return ANY;
 };
 
 const filteringData = (data) => {
@@ -69,6 +70,9 @@ const addFilters = (data) => {
   filterForm.addEventListener('change', () => onFilterFormChange(data));
 };
 
-const resetFilters = () => filterForm.reset();
+const resetFilters = () => {
+  filterForm.reset();
+  createEvent(filterForm, 'change');
+};
 
 export {initFilters, addFilters, resetFilters};

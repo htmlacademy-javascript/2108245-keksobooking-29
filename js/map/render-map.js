@@ -3,54 +3,24 @@ import { getData } from '../utils/api.js';
 import { initFilters, addFilters } from './filter.js';
 import { renderMessage } from '../utils/messages.js';
 import { initForm } from '../form/init-form.js';
+import { MapConfig, DECIMALS, MapError, GET_URL } from '../utils/constants.js';
 
-const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-const GET_URL = 'https://29.javascript.pages.academy/keksobooking/data';
-const ZOOM = 13;
-const DECIMALS = 5;
-const ERROR_MESSAGE = 'Ошибка загрузки данных. Обновите страницу';
-const ERROR_STATE = 'error';
-
-const START_COORDINATE = {
-  lat: 35.68172,
-  lng: 139.75392,
-};
-
-const ICONS_CONFIG = {
-  main: {
-    url: './img/main-pin.svg',
-    width: 52,
-    height: 52,
-    anchorX: 26,
-    anchorY: 52,
-  },
-
-  default: {
-    url: './img/pin.svg',
-    width: 40,
-    height: 40,
-    anchorX: 20,
-    anchorY: 40,
-  }
-};
+const {TITLE_LAYER, COPYRIGHT, ZOOM, START_COORDINATE, ICONS_CONFIG} = MapConfig;
+const {ERROR_MESSAGE, ERROR_STATE} = MapError;
 
 const inputAddress = document.querySelector('#address');
 const map = L.map('map-canvas');
 const markerGroup = L.layerGroup();
 const mainMarkerGroup = L.layerGroup();
 
-const setIcon = (type) => {
-  const icon = ICONS_CONFIG[type];
-  return L.icon({
-    iconUrl: icon.url,
-    iconSize: [icon.width, icon.height],
-    iconAnchor: [icon.anchorX, icon.anchorY],
-  });
-};
+const setIcon = (icon) => L.icon({
+  iconUrl: icon.url,
+  iconSize: [icon.width, icon.height],
+  iconAnchor: [icon.anchorX, icon.anchorY],
+});
 
-const setValue = (type) => {
-  inputAddress.value = `${type.lat.toFixed(DECIMALS)}, ${type.lng.toFixed(DECIMALS)}`;
+const setValue = (coordinate) => {
+  inputAddress.value = `${coordinate.lat.toFixed(DECIMALS)}, ${coordinate.lng.toFixed(DECIMALS)}`;
 };
 
 const onMarkerMove = (evt) => {
@@ -58,15 +28,15 @@ const onMarkerMove = (evt) => {
   setValue(coordinate);
 };
 
-const createMarker = (type = 'default', location, item) => {
+const createMarker = (isMain, location, item) => {
   const marker = L.marker(location || START_COORDINATE,
     {
-      icon: setIcon(type),
-      draggable: type === 'main',
+      icon: setIcon(isMain ? ICONS_CONFIG.main : ICONS_CONFIG.default),
+      draggable: isMain,
     },
-  ).addTo(type === 'main' ? mainMarkerGroup : markerGroup);
+  ).addTo(isMain ? mainMarkerGroup : markerGroup);
 
-  if (type === 'default') {
+  if (!isMain) {
     marker.bindPopup(createCustomPopup(item));
     return;
   }
@@ -75,8 +45,8 @@ const createMarker = (type = 'default', location, item) => {
 };
 
 const createMarkers = (points) => {
-  const newPoints = points.slice().slice(0, 10);
-  newPoints.forEach((point) => createMarker('default', point.location, point));
+  const newPoints = points.slice(0, 10);
+  newPoints.forEach((point) => createMarker(false, point.location, point));
 };
 
 const clearMarkers = () => {
@@ -96,7 +66,6 @@ const onSuccess = (points) => {
   createMarkers(points);
   initFilters();
   addFilters(points);
-  initForm();
 };
 
 const onError = () => {
@@ -108,8 +77,8 @@ const renderFilteringMarker = (points) => {
   markerGroup.addTo(map);
 };
 
-const renderMainMarker = (type) => {
-  createMarker(type);
+const renderMainMarker = () => {
+  createMarker(true);
   setValue(START_COORDINATE);
   mainMarkerGroup.addTo(map);
 };
@@ -117,13 +86,13 @@ const renderMainMarker = (type) => {
 
 const initMap = () => {
   map.on('load', () => {
+    initForm();
     getData(GET_URL, onSuccess, onError);
-    renderMainMarker('main');
+    renderMainMarker();
     markerGroup.addTo(map);
   })
     .setView(START_COORDINATE, ZOOM);
-
-  L.tileLayer(TILE_LAYER, {
+  L.tileLayer(TITLE_LAYER, {
     attribution: COPYRIGHT})
     .addTo(map);
 };

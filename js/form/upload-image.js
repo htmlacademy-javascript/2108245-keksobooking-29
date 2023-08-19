@@ -1,9 +1,7 @@
 import { renderMessage } from '../utils/messages.js';
+import { UploadImageConfig } from '../utils/constants.js';
 
-const FILE_TYPES = ['.gif', '.jpg', '.jpeg', '.png', '.webp'];
-const ERROR_STATE = 'error';
-const ERROR_MESSAGE = 'Выберите другой файл';
-const DEFAULT_SRC = 'img/muffin-grey.svg';
+const {FILE_TYPES, ERROR_STATE, ERROR_MESSAGE, DEFAULT_SRC} = UploadImageConfig;
 
 const preview = document.querySelector('.ad-form-header__preview img');
 const photoContainer = document.querySelector('.ad-form__photo');

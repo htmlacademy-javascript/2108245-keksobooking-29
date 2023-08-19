@@ -1,17 +1,13 @@
-import {sendData} from '../utils/api.js';
+import { sendData } from '../utils/api.js';
 import { renderMessage } from '../utils/messages.js';
 import { validateForm, addValidator, resetPristine } from './validate-form.js';
 import { clearMainMarkers, resetMap, renderMainMarker} from '../map/render-map.js';
 import { resetFilters } from '../map/filter.js';
 import { renderUploadImage, removeUploadImages } from './upload-image.js';
 import { initSlider, restSlider } from './price-slider.js';
+import { POST_URL, UploadFormMessage } from '../utils/constants.js';
 
-const POST_URL = 'https://29.javascript.pages.academy/keksobooking';
-const SUCCESS_STATE = 'success';
-const SUCCESS_MESSAGE = 'Ваше объявление <br> успешно размещено!';
-const ERROR_STATE = 'error';
-const ERROR_MESSAGE = 'Ошибка размещения объявления';
-const ERROR_BUTTON_TEXT = 'Попробовать снова';
+const { SUCCESS, ERROR } = UploadFormMessage;
 
 const form = document.querySelector('.ad-form');
 const formHeader = document.querySelector('.ad-form-header');
@@ -25,32 +21,26 @@ const setSubmitButtonStatus = (state) => {
   submitButton.disabled = state;
 };
 
-const initForm = () => {
-  form.classList.remove('ad-form--disabled');
-  formHeader.disabled = false;
-  formElements.forEach ((formElement) => {
-    formElement.disabled = false;
-  });
-};
-
-const onSuccess = () => {
-  renderMessage(SUCCESS_STATE, SUCCESS_MESSAGE);
-  setSubmitButtonStatus(false);
-};
-
 const resetForm = () => {
   form.reset();
   resetPristine();
   resetMap();
   resetFilters();
   clearMainMarkers();
-  renderMainMarker('main');
+  renderMainMarker();
   restSlider();
   removeUploadImages();
 };
 
+const onSuccess = () => {
+  renderMessage(SUCCESS.state, SUCCESS.message);
+  setSubmitButtonStatus(false);
+  resetForm();
+};
+
 const onError = () => {
-  renderMessage(ERROR_STATE, ERROR_MESSAGE, ERROR_BUTTON_TEXT);
+  renderMessage(ERROR.state, ERROR.message, ERROR.buttonText);
+  setSubmitButtonStatus(false);
 };
 
 const onFormSubmit = (event) => {
@@ -59,7 +49,6 @@ const onFormSubmit = (event) => {
   if (validateForm()) {
     setSubmitButtonStatus(true);
     sendData(POST_URL, onSuccess, onError, new FormData(event.target));
-    resetForm();
   }
 };
 
@@ -85,4 +74,14 @@ const initUploadForm = () => {
   addValidator();
 };
 
-export {initForm, initUploadForm};
+const initForm = () => {
+  form.classList.remove('ad-form--disabled');
+  formHeader.disabled = false;
+  formElements.forEach ((formElement) => {
+    formElement.disabled = false;
+  });
+
+  initUploadForm();
+};
+
+export {initForm};

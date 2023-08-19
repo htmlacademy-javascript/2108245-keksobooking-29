@@ -1,12 +1,4 @@
-const leadType = (type) => {
-  switch (type) {
-    case 'bungalow': return 'Бунгало';
-    case 'flat': return 'Квартира';
-    case 'hotel': return 'Отель';
-    case 'house': return 'Дом';
-    default: return 'Дворец';
-  }
-};
+import { HOUSE_TYPE } from '../utils/constants.js';
 
 const createAvatar = (avatar) =>
   `<img src=${avatar} class="popup__avatar" width="70" height="70" alt="Аватар пользователя">`;
@@ -15,7 +7,7 @@ const createMainPart = ({title, address, price, type, rooms, guests, checkin, ch
   `<h3 class="popup__title">${title}</h3>
     <p class="popup__text popup__text--address">${address}</p>
     <p class="popup__text popup__text--price">${price} <span>₽/ночь</span></p>
-    <h4 class="popup__type">${leadType(type)}</h4>
+    <h4 class="popup__type">${HOUSE_TYPE[type].translate}</h4>
     <p class="popup__text popup__text--capacity">${rooms} комнаты для ${guests} гостей</p>
     <p class="popup__text popup__text--time">Заезд после ${checkin}, выезд до ${checkout}</p>`;
 
