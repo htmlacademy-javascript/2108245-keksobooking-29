@@ -3,7 +3,16 @@ import { HOUSE_TYPE } from '../utils/constants.js';
 const createAvatar = (avatar) =>
   `<img src=${avatar} class="popup__avatar" width="70" height="70" alt="Аватар пользователя">`;
 
-const createMainPart = ({title, address, price, type, rooms, guests, checkin, checkout}) =>
+const createMainPart = ({
+  title,
+  address,
+  price,
+  type,
+  rooms,
+  guests,
+  checkin,
+  checkout,
+}) =>
   `<h3 class="popup__title">${title}</h3>
     <p class="popup__text popup__text--address">${address}</p>
     <p class="popup__text popup__text--price">${price} <span>₽/ночь</span></p>
@@ -22,14 +31,12 @@ const createFeaturesString = (features) => {
 const createFeatures = (features) => {
   let string = '';
   if (features) {
-    string =
-      `<ul class="popup__features">
+    string = `<ul class="popup__features">
         ${createFeaturesString(features)}
   </ul>`;
   }
   return string;
 };
-
 
 const createDescription = (description) => {
   let string = '';
@@ -50,8 +57,7 @@ const createPhotoString = (photos) => {
 const createPhoto = (photos) => {
   let string = '';
   if (photos) {
-    string =
-      `<div class="popup__photos">
+    string = `<div class="popup__photos">
         ${createPhotoString(photos)}
   </div>`;
   }
@@ -67,4 +73,4 @@ const createCustomPopup = (item) =>
     ${createPhoto(item.offer.photos)}
   </article>`;
 
-export {createCustomPopup};
+export { createCustomPopup };

@@ -14,4 +14,4 @@ const createEvent = (element, evt) => {
   element.dispatchEvent(event);
 };
 
-export {isEscapeKey, debounce, createEvent};
+export { isEscapeKey, debounce, createEvent };

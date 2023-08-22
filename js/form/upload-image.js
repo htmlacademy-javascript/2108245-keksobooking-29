@@ -1,7 +1,8 @@
 import { renderMessage } from '../utils/messages.js';
 import { UploadImageConfig } from '../utils/constants.js';
 
-const {FILE_TYPES, ERROR_STATE, ERROR_MESSAGE, DEFAULT_SRC} = UploadImageConfig;
+const { FILE_TYPES, ERROR_STATE, ERROR_MESSAGE, DEFAULT_SRC } =
+  UploadImageConfig;
 
 const preview = document.querySelector('.ad-form-header__preview img');
 const photoContainer = document.querySelector('.ad-form__photo');

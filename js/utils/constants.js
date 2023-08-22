@@ -119,12 +119,15 @@ const FormRules = {
 const ROOMS_CAPACITY = {
   1: {
     quests: 1,
-    message: 'Tолько для 1 гостя'},
+    message: 'Tолько для 1 гостя',
+  },
   100: {
     quests: 0,
-    message: 'Tолько "не для гостей"'},
+    message: 'Tолько "не для гостей"',
+  },
   default: {
-    message: 'Гостей от 1 до '},
+    message: 'Гостей от 1 до ',
+  },
 };
 
 const UploadImageConfig = {
@@ -163,5 +166,5 @@ export {
   ROOMS_CAPACITY,
   UploadImageConfig,
   POST_URL,
-  UploadFormMessage
+  UploadFormMessage,
 };

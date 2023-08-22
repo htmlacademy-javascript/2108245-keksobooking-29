@@ -1,3 +1,4 @@
+import { createEvent } from '../utils/utils.js';
 import { FormRules } from '../utils/constants.js';
 
 const sliderContainer = document.querySelector('.ad-form__slider');
@@ -25,11 +26,22 @@ const createSlider = () => {
 };
 
 const onPriceInputInput = () => {
-  sliderContainer.noUiSlider.set([priceInput.value]);
+  if (priceInput.value) {
+    sliderContainer.noUiSlider.set([priceInput.value]);
+    return;
+  }
+
+  priceInput.value = '0';
+  createEvent(priceInput, 'input');
+};
+
+const onSliderChange = () => {
+  createEvent(priceInput, 'input');
 };
 
 const onSliderUpdate = () => {
   priceInput.value = sliderContainer.noUiSlider.get();
+  sliderContainer.noUiSlider.on('change', onSliderChange);
 };
 
 const initSlider = () => {
@@ -38,6 +50,6 @@ const initSlider = () => {
   priceInput.addEventListener('input', onPriceInputInput);
 };
 
-const restSlider = () => sliderContainer.noUiSlider.reset();
+const resetSlider = () => sliderContainer.noUiSlider.reset();
 
-export {initSlider, restSlider};
+export { initSlider, resetSlider };

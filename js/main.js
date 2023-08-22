@@ -1,3 +1,3 @@
-import { initMap } from './map/render-map.js';
+import { initMap } from './map/init-map.js';
 
 initMap();

@@ -1,10 +1,10 @@
 import { sendData } from '../utils/api.js';
 import { renderMessage } from '../utils/messages.js';
 import { validateForm, addValidator, resetPristine } from './validate-form.js';
-import { clearMainMarkers, resetMap, renderMainMarker} from '../map/render-map.js';
+import { clearMarkers, resetMap, renderMainMarker } from '../map/render-map.js';
 import { resetFilters } from '../map/filter.js';
 import { renderUploadImage, removeUploadImages } from './upload-image.js';
-import { initSlider, restSlider } from './price-slider.js';
+import { initSlider, resetSlider } from './price-slider.js';
 import { POST_URL, UploadFormMessage } from '../utils/constants.js';
 
 const { SUCCESS, ERROR } = UploadFormMessage;
@@ -26,9 +26,9 @@ const resetForm = () => {
   resetPristine();
   resetMap();
   resetFilters();
-  clearMainMarkers();
+  clearMarkers(true);
   renderMainMarker();
-  restSlider();
+  resetSlider();
   removeUploadImages();
 };
 
@@ -74,14 +74,27 @@ const initUploadForm = () => {
   addValidator();
 };
 
-const initForm = () => {
+const setFieldsetsDisabled = (isDisabled) => {
+  formElements.forEach((formElement) => {
+    formElement.disabled = isDisabled;
+  });
+};
+
+const disableForm = () => {
+  form.classList.add('ad-form--disabled');
+  formHeader.disabled = true;
+  setFieldsetsDisabled(true);
+};
+
+const activeForm = () => {
   form.classList.remove('ad-form--disabled');
   formHeader.disabled = false;
-  formElements.forEach ((formElement) => {
-    formElement.disabled = false;
-  });
+  setFieldsetsDisabled(false);
+};
 
+const initForm = () => {
+  activeForm();
   initUploadForm();
 };
 
-export {initForm};
+export { initForm, disableForm };

@@ -1,7 +1,7 @@
 import { createEvent } from '../utils/utils.js';
 import { HOUSE_TYPE, FormRules, ROOMS_CAPACITY } from '../utils/constants.js';
 
-const {MAX_TITLE, MIN_TITLE, PRICE_TYPE, MAX_PRICE} = FormRules;
+const { MAX_TITLE, MIN_TITLE, PRICE_TYPE, MAX_PRICE } = FormRules;
 
 const form = document.querySelector('.ad-form');
 const titleInput = document.querySelector('#title');
@@ -26,9 +26,11 @@ const isPriceTypeValid = () => PRICE_TYPE.regexpInclude.test(priceInput.value);
 
 const isPriceValid = () => priceInput.value <= MAX_PRICE.value;
 
-const isPriceToType = () => HOUSE_TYPE[typeSelect.value].minPrice <= priceInput.value;
+const isPriceToType = () =>
+  HOUSE_TYPE[typeSelect.value].minPrice <= priceInput.value;
 
-const renderErrorForPrice = () => `Цена должна быть не менее ${HOUSE_TYPE[typeSelect.value].minPrice}`;
+const renderErrorForPrice = () =>
+  `Цена должна быть не менее ${HOUSE_TYPE[typeSelect.value].minPrice}`;
 
 const onPriceInputInput = () => {
   priceInput.value = priceInput.value.replace(PRICE_TYPE.regexpExclude, '');
@@ -49,7 +51,7 @@ const onTimeOutSelectChange = (evt) => {
 };
 
 const onRoomSelectChange = () => {
-  createEventChange(capacitySelect);
+  createEvent(capacitySelect, 'input');
 };
 
 const isCapacityValid = () => {
@@ -62,7 +64,7 @@ const isCapacityValid = () => {
 
 const renderErrorForCapacity = () => {
   const element = ROOMS_CAPACITY[roomSelect.value];
-  if(!element) {
+  if (!element) {
     return ROOMS_CAPACITY.default.message + roomSelect.value;
   }
 

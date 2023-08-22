@@ -11,7 +11,11 @@ const createElement = (template) => {
 const createMessageTemplate = (state, message, buttonText) =>
   `<div class='${state}'>
     <p class='${state}__message'>${message}</p>
-    ${buttonText ? `<button type="button" class="${state}__button">${buttonText}</button>` : ''}
+    ${
+  buttonText
+    ? `<button type="button" class="${state}__button">${buttonText}</button>`
+    : ''
+}
   </div>`;
 
 const closeMessage = () => {
@@ -32,7 +36,7 @@ const onSubmitButtonClick = (event) => {
 };
 
 const onMessageContainerClick = (event, state) => {
-  if (!event.target.closest(`.${state}__inner`)) {
+  if (!event.target.closest(`.${state}__message`)) {
     closeMessage();
   }
 };
