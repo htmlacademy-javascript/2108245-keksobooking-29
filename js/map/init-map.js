@@ -5,7 +5,7 @@ import { renderMessage } from '../utils/messages.js';
 import { initFilters, addFilters, disableFiltersForm } from './filter.js';
 import { MapError, GET_URL } from '../utils/constants.js';
 
-const { ERROR_MESSAGE, ERROR_STATE } = MapError;
+const { MESSAGE, STATE } = MapError;
 
 const onSuccess = (points) => {
   createMarkers(points);
@@ -14,7 +14,7 @@ const onSuccess = (points) => {
 };
 
 const onError = () => {
-  renderMessage(ERROR_STATE, ERROR_MESSAGE);
+  renderMessage(STATE, MESSAGE);
 };
 
 const initMap = () => {

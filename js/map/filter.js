@@ -47,20 +47,20 @@ const checkQuests = (point, formObject) =>
   formObject[GUESTS] === ANY ||
   point.offer.guests === parseInt(formObject[GUESTS], 10);
 
-const checkFeatures = (point, formData) => {
-  const formFeatures = formData.getAll('features');
+const checkFeatures = (point, features) => {
   const objectFeatures = point.offer.features;
   if (objectFeatures) {
-    return formFeatures.every((formFeature) =>
+    return features.every((formFeature) =>
       objectFeatures.includes(formFeature)
     );
   }
-  return ANY;
+  return false;
 };
 
 const filteringData = (data) => {
   const formData = new FormData(filterForm);
   const formObject = Object.fromEntries(formData);
+  const features = formData.getAll('features');
   const newData = data
     .slice()
     .filter(
@@ -69,7 +69,7 @@ const filteringData = (data) => {
         checkPrice(point, formObject) &&
         checkRooms(point, formObject) &&
         checkQuests(point, formObject) &&
-        checkFeatures(point, formData)
+        (features.length > 0 ? checkFeatures(point, features) : true)
     )
     .slice(0, MARKERS_COUNT);
   createMarkers(newData);
