@@ -93,4 +93,4 @@ const resetFilters = () => {
   createEvent(filterForm, 'change');
 };
 
-export { initFilters, addFilters, resetFilters, disableFiltersForm };
+export { initFilters, addFilters, disableFiltersForm, resetFilters };
