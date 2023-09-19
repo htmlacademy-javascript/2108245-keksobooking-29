@@ -32,8 +32,13 @@ const isPriceToType = () =>
 const renderErrorForPrice = () =>
   `Цена должна быть не менее ${HOUSE_TYPE[typeSelect.value].minPrice}`;
 
-const onPriceInputInput = () => {
-  priceInput.value = priceInput.value.replace(PRICE_TYPE.regexpExclude, '');
+const onPriceInputKeydown = (event) => {
+  if (event.key === '-' ||
+      event.key === '+' ||
+      event.key === 'e' ||
+      event.key === '.') {
+    event.preventDefault();
+  }
 };
 
 const onTypeSelectChange = (evt) => {
@@ -73,7 +78,7 @@ const renderErrorForCapacity = () => {
 
 const addValidator = () => {
   priceInput.placeholder = HOUSE_TYPE[typeSelect.value].minPrice;
-  priceInput.addEventListener('input', onPriceInputInput);
+  priceInput.addEventListener('keydown', (event) => onPriceInputKeydown(event));
   typeSelect.addEventListener('change', onTypeSelectChange);
   timeInSelect.addEventListener('change', onTimeInSelectChange);
   timeOutSelect.addEventListener('change', onTimeOutSelectChange);

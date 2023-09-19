@@ -100,7 +100,6 @@ const FormRules = {
 
   PRICE_TYPE: {
     regexpInclude: /^[0-9]+$|^$/,
-    regexpExclude: /[e,+,-]/g,
     error: 'Только цифры',
   },
 
