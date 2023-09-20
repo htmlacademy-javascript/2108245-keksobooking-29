@@ -12,8 +12,8 @@ const mainMarkerGroup = L.layerGroup().addTo(map);
 const setIcon = (icon) =>
   L.icon({
     iconUrl: icon.url,
-    iconSize: [icon.width, icon.height],
-    iconAnchor: [icon.anchorX, icon.anchorY],
+    iconSizes: [icon.width, icon.height],
+    iconAnchors: [icon.anchorX, icon.anchorY],
   });
 
 const setValue = (coordinate) => {
